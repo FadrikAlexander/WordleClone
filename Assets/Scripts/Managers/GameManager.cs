@@ -1,9 +1,12 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+
+    //Set to true of you want the Daily word to be fixed until the next day
+    [SerializeField] bool isDaily = false;
+
 
     //added [SerializeField] to be able to see the word in the inspector
     [SerializeField] string winningWord;
@@ -32,6 +35,10 @@ public class GameManager : MonoBehaviour
     {
         isGameEnded = false;
 
+        //Set the Random seed to today's date
+        //Which means each day will have a single word
+        if (isDaily) Random.InitState(System.DateTime.Today.ToString().GetHashCode());
+
         winningWord = wordsManager.GetRandomWord();
         containersManager.ClearContainers();
 
@@ -48,8 +55,6 @@ public class GameManager : MonoBehaviour
 
     void MoveToNextTry()
     {
-        containersManager.MoveToNextTry();
-
         for (int i = 0; i < 5; i++)
         {
             if (IsLetterInRightPlace(i))
@@ -58,6 +63,8 @@ public class GameManager : MonoBehaviour
             if (IsLetterInWord(i))
                 containersManager.SetLetterContainerInWordColor(i);
         }
+
+        containersManager.MoveToNextTry();
 
         currentWord = "";
         tries--; //Move to the next Try
