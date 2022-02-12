@@ -58,13 +58,13 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             if (IsLetterInRightPlace(i))
-                containersManager.SetLetterContainerInRightPlaceColor(i);
+                containersManager.SetLetterContainerColor(i, ColorDataStore.GetLetterInRightPlaceColor());
             else
             if (IsLetterInWord(i))
-                containersManager.SetLetterContainerInWordColor(i);
+                containersManager.SetLetterContainerColor(i, ColorDataStore.GetLetterInWordColor());
         }
 
-        containersManager.MoveToNextTry();
+        containersManager.MoveToNextContainer();
 
         currentWord = "";
         tries--; //Move to the next Try
@@ -99,7 +99,17 @@ public class GameManager : MonoBehaviour
             containersManager.DeleteLastLetterContainer();
         }
     }
+    public void AddLetter(string letter)
+    {
+        if (isGameEnded) return;
 
+        if (currentWord.Length < 5)
+        {
+            letter = letter.ToLower();
+            currentWord += letter;
+            containersManager.AddContainerLetter(letter);
+        }
+    }
     public void SubmitWord()
     {
         if (isGameEnded) return;
@@ -124,17 +134,6 @@ public class GameManager : MonoBehaviour
             MoveToNextTry();
     }
 
-    public void AddLetter(string letter)
-    {
-        if (isGameEnded) return;
-
-        if (currentWord.Length < 5)
-        {
-            letter = letter.ToLower();
-            currentWord += letter;
-            containersManager.AddContainerLetter(letter);
-        }
-    }
     public bool IsLetterInRightPlace(int index)
     {
         return currentWord[index] == winningWord[index];
